@@ -1,31 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import Database from './Database';
+
+export default function AppForm({ navigation }) {
+
+  const [descricao, setDescricao] = useState('');
+  const [quantidade, setQuantidade] = useState('');
+
+  function handleDescriptionChange(descricao) { setDescricao(descricao); }
+  function handleQuantityChange(quantidade) { setQuantidade(quantidade); }
+
+  async function handleButtonPress() {
+    const listItem = { descricao, quantidade: parseInt(quantidade) };
+    Database.saveItem(listItem)
+      .then(response => navigation.navigate("AppList", listItem));
+  }
 
 
-export default function AppForm() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Item para comprar</Text>
-      <View style={styles.inputContainer}> 
-        <TextInput 
-          style={styles.input} 
+      <Text style={styles.title}>Itens para comprar</Text>
+      <View style={styles.inputContainer}>
+
+
+        <TextInput
+          style={styles.input}
+          onChangeText={handleDescriptionChange}
           placeholder="O que está faltando em casa?"
-          clearButtonMode="always" /> 
-        <TextInput 
-          style={styles.input}  
-          placeholder="Digite a quantidade" 
-          keyboardType={'numeric'}
-          clearButtonMode="always" /> 
-        <TouchableOpacity style={styles.button}> 
-          <Text style={styles.buttonText}>Salvar</Text> 
-        </TouchableOpacity> 
+          clearButtonMode="always" />
+
+
+        <TextInput
+          style={styles.input}
+          onChangeText={handleQuantityChange}
+          placeholder="Digite a quantidade"
+          // keyboardType={'numeric'}
+          clearButtonMode="always" />
+
+
+        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+          <Text style={styles.buttonText}>Salvar</Text>
+        </TouchableOpacity>
+
+
       </View>
       <StatusBar style="light" />
     </View>
   );
-}
 
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -58,11 +82,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignItems: 'stretch'
   },
-  
+
   button: {
     marginTop: 10,
     height: 60,
-    backgroundColor: 'blue',
+    backgroundColor: 'green',
     borderRadius: 10,
     paddingHorizontal: 24,
     fontSize: 16,
